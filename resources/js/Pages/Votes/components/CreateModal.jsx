@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
+import {router} from "@inertiajs/react";
+
 
  const CreateModal = ({closeModal,votestype}) => {
     const [seattype, setSeatType] = useState(1);
@@ -36,6 +38,7 @@ console.log(votesData)
         console.log(error)
     })
   }
+  // fetch seat types
     const seatTypes = async () => {
         try{
         const response = await axios.get('http://localhost:8000/api/seats/list');
@@ -45,17 +48,20 @@ console.log(votesData)
             console.log(error)
         }
     }
+    // submit form data
     const submitForm = (e) => {
         e.preventDefault();
         axios.post("http://localhost:8000/api/votes-store",votesData)
         .then((response) => {
-            console.log(response)
+            router.reload({ only:['votes']});
+            closeModal();
+
         })
         .catch((error) => {
             console.log(error)
         })
     }
-
+// useeffect is used for component rendering control
     useEffect(()=>{
         seatTypes();
         getCandidatelist();
@@ -71,6 +77,7 @@ console.log(votesData)
                 {votestype == 0 && (
                 <div className='form-group'>
                     <select name="seatcode" value={selectseattype.seatcode} onChange={handleseattypes} className='form-control' id="">
+                    <option value="">Select Seat</option>
                         {seattypeslist && seattypeslist.map((item,index) => (
                             <option value={item.seatID} key={index}>{item.seatCode}</option>
                         ))}
@@ -80,7 +87,8 @@ console.log(votesData)
                 )}
                 {votestype == 1 && (
                 <div className='form-group'>
-                    <select name="" className='form-control' id="">
+                    <select name="seatcode" value={selectseattype.seatcode} onChange={handleseattypes} className='form-control' id="">
+                    <option value="">Select Seat</option>
                         {seattypeslist && seattypeslist.filter(item => item.seatType === 'Provincial').map((item,index) => (
                             <option value={item.seatID} key={index}>{item.seatCode}</option>
                         ))}
@@ -90,7 +98,8 @@ console.log(votesData)
                 )}
                 {votestype == 2 && (
                 <div className='form-group'>
-                    <select name="" className='form-control' id="">
+                    <select name="seatcode" value={selectseattype.seatcode} onChange={handleseattypes} className='form-control' id="">
+                        <option value="">Select Seat</option>
                         {seattypeslist && seattypeslist.filter(item => item.seatType === 'National').map((item,index) => (
                             <option value={item.seatID} key={index}>{item.seatCode}</option>
                         ))}

@@ -24,7 +24,7 @@ const Sidebar = () => {
 
                             </li>
                             <li className={`dropdown ${currentPath === '/votes' ? 'active' : ''}`}>
-                                <Link href='/votes'>
+                                <Link  href='/votes'>
                                     <i data-feather="monitor"></i><span>Votes</span>
                                 </Link>
 

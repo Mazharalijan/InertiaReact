@@ -9,6 +9,7 @@ use App\Models\Votes;
 use App\Models\CandidateConst;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 class VotesController extends Controller
 {
    public function index(){
@@ -57,23 +58,49 @@ class VotesController extends Controller
    }
    public function store(Request $request){
 
-
         $data = [];
-        for($i = 0; $i < count($request->all()); $i++){
-            $record = [
-                'fk_candidate_id' => $request[$i]["candidate"],
-                'fk_seat_id' => $request[$i]["seat"],
-                'votes' => $request[$i]["votes"],
-                'fk_candidate_id' => 36
-            ];
-                $data[] = $record;
+        //arrange request data in array
+        foreach ($request->all() as $record) {
+                $formattedRecord = [
+                    'fk_candidate_id' => $record["candidate"],
+                    'fk_seat_id' => $record["seat"],
+                    'votes' => $record["votes"],
+                    'EUID' => 36,
+                    'created_at' => now(),
+                ];
 
-
+                $data[] = $formattedRecord;
         }
+        // start try catch block
+        try{
 
-        $votes = Votes::create($data);
-        return $votes;
-
-   }
+            DB::beginTransaction();
+            // record insertion query
+            $votes = Votes::insert($data);
+            DB::commit();
+                if($votes){
+                    // if record inserted
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'record inserted'
+                    ]);
+                }else{
+                    // if record not inserted
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'record not inserted'
+                    ]);
+                }
+        }
+        catch(\Exception $error){
+        // some internal error occure
+            DB::rollback();
+            return response()->json([
+                'error' => $error,
+                'status' => false,
+                'message'=> 'some internal error'
+            ]);
+        }
+    }
 }
 

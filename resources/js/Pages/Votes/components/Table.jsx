@@ -1,15 +1,26 @@
 import React,{useState} from 'react'
 import CreateModal from './CreateModal';
+import UpdateModal from './UpdateModal';
+import Pagination from '../../../Utls/Pagination';
 
 const Table = ({votes,votestype}) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [modalVissiablity, setVisibleModal] = useState(false);
+    const [updatemodalVissiablity, setUpdateVisibleModal] = useState(false);
+    const [updateVotes, setUpdateVotes] = useState([]);
 
     const showModal = () => {
         setVisibleModal(true)
     }
     const closeModal = () => {
         setVisibleModal(false)
+    }
+    const updateshowModal = (item) => {
+        setUpdateVotes(item);
+        setUpdateVisibleModal(true)
+    }
+    const updatecloseModal = () => {
+        setUpdateVisibleModal(false)
     }
 
         const voteslist = votes.filter(item =>
@@ -31,6 +42,7 @@ const Table = ({votes,votestype}) => {
 
 
             {modalVissiablity && <CreateModal votestype={votestype}  closeModal={closeModal} />}
+            {updatemodalVissiablity && <UpdateModal updateVotes={updateVotes}   closeModal={updatecloseModal} />}
         <div className="row">
         <div className="col-12 col-md-12 col-lg-12">
                 <div>
@@ -92,7 +104,7 @@ const Table = ({votes,votestype}) => {
                                  <td>
                                   {item.votes}
                                  </td>
-                                 <td><a href="#" className="btn btn-primary">
+                                 <td><a onClick={()=>updateshowModal(item)} style={{ color:'white', cursor:'pointer' }} className="btn btn-primary">
                                      <i className='fa fa-edit'></i>
                                      </a></td>
                                </tr>
@@ -118,7 +130,7 @@ const Table = ({votes,votestype}) => {
                                 <td>
                                  {item.votes}
                                 </td>
-                                <td><a href="#" className="btn btn-primary">
+                                <td><a onClick={()=>updateshowModal(item)} style={{ color:'white', cursor:'pointer' }} className="btn btn-primary">
                                     <i className='fa fa-edit'></i>
                                     </a></td>
                               </tr>
@@ -144,7 +156,7 @@ const Table = ({votes,votestype}) => {
                             <td>
                              {item.votes}
                             </td>
-                            <td><a href="#" className="btn btn-primary">
+                            <td><a onClick={()=>updateshowModal(item)} style={{ color:'white', cursor:'pointer' }} className="btn btn-primary">
                                 <i className='fa fa-edit'></i>
                                 </a></td>
                           </tr>
