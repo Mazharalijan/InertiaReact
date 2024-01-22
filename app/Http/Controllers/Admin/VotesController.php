@@ -102,5 +102,54 @@ class VotesController extends Controller
             ]);
         }
     }
+    public function update(string $id, Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'votes' => 'required|numeric'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'error' => $validator->errors(),
+                'status' => false
+            ]);
+        }
+
+        $votes = Votes::find($id);
+
+        if (is_null($votes)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'No record found'
+            ]);
+        }
+
+        $data = [
+            'votes' => intval($request->votes),
+            'UUID' => 1
+        ];
+
+        try {
+            DB::beginTransaction();
+
+            $votes->update($data);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Record updated'
+            ]);
+        } catch (\Exception $error) {
+            DB::rollback();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Some internal error',
+                'error' => $error
+            ]);
+        }
+    }
+
 }
 

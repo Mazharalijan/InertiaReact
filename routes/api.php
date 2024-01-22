@@ -24,3 +24,4 @@ Route::get('/operator/list', [OperatorController::class, 'operatorList'])->name(
 Route::get('/seats/list', [CommonController::class, 'getSeatType'])->name('seats.list');
 Route::post('/candidate-list', [VotesController::class, 'votescandidatelist'])->name('votes.list');
 Route::post('/votes-store', [VotesController::class, 'store'])->name('votes.store');
+Route::put('/votes-update/{id}', [VotesController::class, 'update'])->name('votes.update');

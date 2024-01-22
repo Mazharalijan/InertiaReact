@@ -26,6 +26,7 @@ const VotesList = ({votes}) => {
 
 
 
+
   return (
     <>
         <Header />
